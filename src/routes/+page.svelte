@@ -1,8 +1,16 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
+	type transaction = {
+		amount: number;
+		timestamp: string;
+	};
+
 	let totalIncome = 23000 + 0;
 	let totalExpenses = 12194;
 	let curAmount: number | string;
+	let transactions: transaction[] = [];
+	let theInput: any;
 
 	$: balance = totalIncome - totalExpenses;
 
@@ -13,15 +21,43 @@
 		} else {
 			betrag = curAmount;
 		}
-		if (add) totalIncome += betrag;
-		if (!add) totalExpenses += betrag;
-		curAmount = 0;
+		if (add) {
+			totalIncome += betrag;
+		}
+		if (!add) {
+			totalExpenses += betrag;
+			betrag = betrag - 2 * betrag;
+		}
+
+		transactions = [{ amount: betrag, timestamp: formatNow() }, ...transactions];
+		theInput.value = '';
+		theInput.focus();
+	}
+
+	function formatNow(): string {
+		const now = new Date(Date.now());
+		const output =
+			now.getFullYear() +
+			'-' +
+			now.getMonth() +
+			1 +
+			'-' +
+			(now.getDate() < 10 ? '0' : '') +
+			now.getDate() +
+			' ' +
+			now.getHours() +
+			':' +
+			now.getMinutes() +
+			':' +
+			now.getSeconds();
+		return output;
 	}
 
 	function reset(): void {
 		balance = 0;
 		totalIncome = 0;
 		totalExpenses = 0;
+		transactions = [];
 	}
 </script>
 
@@ -46,7 +82,13 @@
 
 <div class="form">
 	<div class="input">
-		<input type="text" class="amount" bind:value={curAmount} placeholder="the amount" />
+		<input
+			bind:this={theInput}
+			bind:value={curAmount}
+			class="amount"
+			placeholder="the amount"
+			type="text"
+		/>
 	</div>
 	<div class="buttons">
 		<button on:click={() => doTransaction(true)}><Icon icon="ic:baseline-plus" /></button>
@@ -56,8 +98,11 @@
 <div class="reset"><button on:click={reset}>Reset</button></div>
 
 <div class="history">
-	<p class="plus">$ 8000</p>
-	<p class="minus">$ 4311</p>
+	{#each transactions as trs (trs.timestamp)}
+		<p><span class={trs.amount >= 0 ? 'green' : 'red'}>{trs.amount}</span> ({trs.timestamp})</p>
+	{:else}
+		<p />
+	{/each}
 </div>
 
 <style lang="scss">
@@ -104,5 +149,16 @@
 	.reset {
 		margin-top: 1.5rem;
 		text-align: center;
+	}
+
+	.history > p {
+		text-align: center;
+	}
+	.green {
+		color: hsl(106, 97%, 27%);
+	}
+
+	.red {
+		color: hsl(0, 97%, 47%);
 	}
 </style>
