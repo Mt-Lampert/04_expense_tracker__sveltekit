@@ -1,3 +1,15 @@
 @import url(sanitize.css);
 
+@mixin  datacard {
+  margin-top: 2rem;
+  > p, h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-align: center;
+  }
+  > p {
+    font-size: 1.25rem;
+  }
+};
+
 $link-color: hsl(211, 100%, 50%);
