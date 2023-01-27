@@ -8,6 +8,19 @@ date: 2023-01-26
 
 # JOURNAL
 
+## 2023-01-27 07:40
+
+All right. Since Bulma no longer works the easy way (and I don't really need it), 
+I had to do a few jobs Bulma was doing for me, using the following packages:
+
+```json
+"dependencies": {
+  "@fontsource/poppins": "^4.5.10",
+  "sanitize.css": "^13.0.0"
+}
+```
+
+
 ## 2023-01-26 16:56
 
 New Game, new luck. Had some tough moments with this one. _Svelte-add_ no longer
